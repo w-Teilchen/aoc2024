@@ -1,8 +1,13 @@
 import time
 
+
 def is_stable_sequence(sequence):
-    increments = [sequence[i] - sequence[i-1] for i in range(1, len(sequence))]
-    return all([abs(increment) <= 3 for increment in increments]) and (all([increment < 0 for increment in increments]) or all([increment > 0 for increment in increments]))
+    increments = [sequence[i] - sequence[i - 1] for i in range(1, len(sequence))]
+    return all([abs(increment) <= 3 for increment in increments]) and (
+        all([increment < 0 for increment in increments])
+        or all([increment > 0 for increment in increments])
+    )
+
 
 # Start timing
 start_time = time.perf_counter()
@@ -17,7 +22,7 @@ for line in input:
         number_of_stable_sequences += 1
     else:
         for i in range(1, len(sequence) + 1):
-            if is_stable_sequence(sequence[:i-1] + sequence[i:]):
+            if is_stable_sequence(sequence[: i - 1] + sequence[i:]):
                 number_of_stable_sequences += 1
                 break
 

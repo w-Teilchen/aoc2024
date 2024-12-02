@@ -2,7 +2,7 @@ import time
 
 def is_stable_sequence(sequence):
     increments = [sequence[i] - sequence[i-1] for i in range(1, len(sequence))]
-    return all([abs(increment) <= 3 and increment != 0 for increment in increments]) and (all([increment < 0 for increment in increments]) or all([increment > 0 for increment in increments]))
+    return all([abs(increment) <= 3 for increment in increments]) and (all([increment < 0 for increment in increments]) or all([increment > 0 for increment in increments]))
 
 # Start timing
 start_time = time.perf_counter()

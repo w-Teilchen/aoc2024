@@ -1,6 +1,11 @@
+import time
+
 def is_stable_sequence(sequence):
     increments = [sequence[i] - sequence[i-1] for i in range(1, len(sequence))]
     return all([abs(increment) <= 3 and increment != 0 for increment in increments]) and (all([increment < 0 for increment in increments]) or all([increment > 0 for increment in increments]))
+
+# Start timing
+start_time = time.perf_counter()
 
 # Read input.txt and create lists of lists from it
 input = open("input.txt", "r")
@@ -19,3 +24,7 @@ for line in input:
 print(number_of_stable_sequences, "stable sequences found.")
 
 input.close()
+
+# End timing
+end_time = time.perf_counter()
+print("Execution time: {:.3f} seconds".format(end_time - start_time))

@@ -46,6 +46,26 @@ def solve_second_part(numbers: List[List[int]]) -> int:
     return sum([a * b for a, b in numbers])
 
 
+# This is a conversion of the approach implemented by Lars Martens.
+def solve_with_alternative_approach(input: str) -> int:
+    pattern = re.compile(r"mul\((\d+),(\d+)\)|don't|do")
+    matches = pattern.finditer(input)
+
+    enabled = True
+    sum = 0
+    for match in matches:
+        if match.group(0) == "don't":
+            enabled = False
+        elif match.group(0) == "do":
+            enabled = True
+        elif match.group(1) and match.group(2):
+            if enabled:
+                a, b = int(match.group(1)), int(match.group(2))
+                sum += a * b
+
+    return sum
+
+
 def read_input_from_file(path: str) -> str:
     try:
         input = pathlib.Path(path).read_text().strip()
@@ -81,7 +101,7 @@ def main():
         return
     example_numbers = parse(example_input)
     numbers = parse(input)
-
+    solve_with_alternative_approach(input)
     print("\nSolving first part...")
     solve_part(
         example_numbers, numbers, solve_first_part, given_example_solution_of_first_part

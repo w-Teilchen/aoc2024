@@ -1,6 +1,7 @@
 import pathlib
 from typing import List
 import time
+from functools import cache
 
 # The given solutions need to be updated to the correct values.
 given_example_solution_of_first_part = 55312
@@ -13,50 +14,27 @@ def parse(input: str, separator: str = " ") -> List[List[int]]:
     return list(map(int, input.split(separator)))
 
 
-def blink(number: int) -> List[int]:
+@cache
+def count_stones(number: int, remaining_blinks: int) -> int:
+    if remaining_blinks == 0:
+        return 1
     if number == 0:
-        return [1]
+        return count_stones(1, remaining_blinks - 1)
     number_of_digits = len(str(number))
     if number_of_digits % 2 == 0:
         first_half_of_digits = number // 10 ** (number_of_digits // 2)
         second_half_of_digits = number % 10 ** (number_of_digits // 2)
-        return [first_half_of_digits, second_half_of_digits]
-    return [number * 2024]
-
-
-def blink_multiple_times(numbers: List[int], remaining_blinks: int) -> List[int]:
-    if remaining_blinks == 0:
-        return numbers
-    new_numbers = []
-    for number in numbers:
-        new_numbers.extend(blink(number))
-    return blink_multiple_times(new_numbers, remaining_blinks - 1)
-
-
-def blink_twentyfive_times(number: int) -> List[int]:
-    if number in twenty_five_blink_lookup_table:
-        return twenty_five_blink_lookup_table[number]
-
-    stones_after_twentyfive_blinks = blink_multiple_times([number], 25)
-    twenty_five_blink_lookup_table[number] = stones_after_twentyfive_blinks
-    return stones_after_twentyfive_blinks
-
-
-def count_stones_after_seventyfive_blinks(number: int) -> List[int]:
-    number_of_stones = 0
-    for stone in blink_twentyfive_times(number):
-        stones_after_fifty_blinks = blink_twentyfive_times(stone)
-        for stone in stones_after_fifty_blinks:
-            number_of_stones += len(blink_twentyfive_times(stone))
-
-    return number_of_stones
+        return count_stones(first_half_of_digits, remaining_blinks - 1) + count_stones(
+            second_half_of_digits, remaining_blinks - 1
+        )
+    return count_stones(number * 2024, remaining_blinks - 1)
 
 
 def solve_first_part(numbers: List[List[int]]) -> int:
     start = time.time()
     number_of_stones = 0
     for number in numbers:
-        number_of_stones += len(blink_twentyfive_times(number))
+        number_of_stones += count_stones(number, 25)
     print(f"Execution time: {time.time() - start}")
 
     return number_of_stones
@@ -66,7 +44,7 @@ def solve_second_part(numbers: List[List[int]]) -> int:
     start = time.time()
     number_of_stones = 0
     for number in numbers:
-        number_of_stones += count_stones_after_seventyfive_blinks(number)
+        number_of_stones += count_stones(number, 75)
     print(f"Execution time: {time.time() - start}")
 
     return number_of_stones
